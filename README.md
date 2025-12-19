@@ -23,7 +23,7 @@ A custom node for ComfyUI that integrates a local LLM (via OpenAI-compatible API
 2.  Connect the output `prompt` to your CLIP Text Encode node.
 3.  **Configuration**:
     -   **Input Prompt**: Your raw idea or base prompt.
-    -   **System Prompt**: Instructions for the LLM (e.g., "Convert this to a Z-Image Turbo prompt...").
+    -   **System Prompt**: Instructions for the LLM (System prompt supplied in HF repo!).
     -   **API URL**: Your local LLM endpoint (default: `http://localhost:1234/v1`).
     -   **Model**: The model name string (default: `local-model`).
     -   **Seed/Temperature**: Standard LLM generation parameters.
