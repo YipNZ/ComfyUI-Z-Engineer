@@ -39,6 +39,30 @@ class ZEngineer:
                     "max": 2.0,
                     "step": 0.01
                 }),
+		"repeat_penalty": ("FLOAT", {
+                    "default": 1.05,
+                    "min": 1.0,
+                    "max": 2.0,
+                    "step": 0.01
+                }),
+		"top_k": ("INT", {
+                    "default": 20,
+                    "min": 0,
+                    "max": 100,
+                    "step": 1
+                }),
+		"top_p": ("FLOAT", {
+                    "default": 0.85,
+                    "min": 0.0,
+                    "max": 1.0,
+                    "step": 0.01
+                }),
+		"top_p": ("FLOAT", {
+                    "default": 0.85,
+                    "min": 0.0,
+                    "max": 1.0,
+                    "step": 0.01
+                }),
             },
         }
 
@@ -47,7 +71,7 @@ class ZEngineer:
     FUNCTION = "generate_prompt"
     CATEGORY = "Z-Engineer"
 
-    def generate_prompt(self, input_prompt, system_prompt, api_url, model, seed, temperature):
+    def generate_prompt(self, input_prompt, system_prompt, api_url, model, seed, temperature, repeat_penalty, top_k, top_p):
         if not input_prompt:
             return ("",)
 
@@ -67,13 +91,16 @@ class ZEngineer:
                 {"role": "user", "content": input_prompt}
             ],
             "temperature": temperature,
+            "repeat_penalty": repeat_penalty,
+            "top_k": top_k,
+            "top_p": top_p,
             "seed": seed,
             "stream": False
         }
 
         try:
             print(f"Sending request to {endpoint} with model {model}...")
-            response = requests.post(endpoint, headers=headers, json=payload, timeout=60)
+            response = requests.post(endpoint, headers=headers, json=payload, timeout=90)
             response.raise_for_status()
             
             data = response.json()
