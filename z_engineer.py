@@ -1,6 +1,7 @@
 import requests
 import json
 import logging
+import re
 
 class ZEngineer:
     def __init__(self):
@@ -61,25 +62,28 @@ class ZEngineer:
         }
 
         payload = {
-            "model": model,
+            "model": model.strip(),
             "messages": [
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": input_prompt}
             ],
             "temperature": temperature,
-            "seed": seed,
+            "seed": seed % (2**31 - 1),
             "stream": False
         }
 
         try:
             print(f"Sending request to {endpoint} with model {model}...")
-            response = requests.post(endpoint, headers=headers, json=payload, timeout=60)
+            response = requests.post(endpoint, headers=headers, json=payload, timeout=300)
             response.raise_for_status()
             
             data = response.json()
             
             # OpenAI format usually: choices[0].message.content
             output_text = data['choices'][0]['message']['content']
+
+            # Strip <think>...</think> blocks from reasoning models
+            output_text = re.sub(r'<think>.*?</think>\s*', '', output_text, flags=re.DOTALL)
             
             print(f"Z-Engineer Response: {output_text[:100]}...")
             
